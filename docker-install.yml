@@ -1,0 +1,38 @@
+---
+- name: Install docker
+  hosts: dockers
+  become: yes
+  gather_facts: yes
+ 
+  tasks:
+
+    - name: install epel-release repo
+      yum:
+        name: epel-release
+
+    - name: Install yum utils
+      yum:
+        name: yum-utils,device-mapper-persistent-data,lvm2
+        state: latest
+
+    - name: Add Docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docer-ce.repo
+       
+
+    - name: Install docker
+      yum:
+        name:
+           - docker-ce
+           - docker-compose
+        state: present
+        update_cache: yes
+
+    
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
